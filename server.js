@@ -6,13 +6,11 @@ const app = express();
 app.use(express.json());
 app.use(cors());
 
-// MongoDB connection (optional, or use an array for questions)
 mongoose.connect("mongodb://localhost:27017/quizDB", {
     useNewUrlParser: true,
     useUnifiedTopology: true,
 });
 
-// Define Quiz Schema
 const questionSchema = new mongoose.Schema({
     question: String,
     options: [String],
@@ -21,27 +19,39 @@ const questionSchema = new mongoose.Schema({
 
 const Question = mongoose.model("Question", questionSchema);
 
-// Sample Questions (for non-database use)
 const questions = [
-    {
-        question: "What is the capital of France?",
-        options: ["Paris", "London", "Berlin", "Rome"],
-        correctAnswer: "Paris",
+   {
+        question: "Which element has the chemical symbol 'Hg'?",
+        options: ["Mercury", "Hydrogen", "Magnesium", "Helium"],
+        correctAnswer: "Mercury",
     },
     {
-        question: "Which planet is known as the Red Planet?",
-        options: ["Earth", "Mars", "Jupiter", "Venus"],
-        correctAnswer: "Mars",
+        question: "Who painted the 'Starry Night'?",
+        options: ["Vincent van Gogh", "Pablo Picasso", "Leonardo da Vinci", "Claude Monet"],
+        correctAnswer: "Vincent van Gogh",
+    },
+    {
+        question: "What is the smallest planet in our solar system?",
+        options: ["Mercury", "Mars", "Venus", "Pluto"],
+        correctAnswer: "Mercury",
+    },
+    {
+        question: "Which ancient wonder was located in Babylon?",
+        options: ["Hanging Gardens", "Colossus of Rhodes", "Great Pyramid", "Temple of Artemis"],
+        correctAnswer: "Hanging Gardens",
+    },
+    {
+        question: "Which programming language is often associated with web development?",
+        options: ["Python", "JavaScript", "C++", "Swift"],
+        correctAnswer: "JavaScript",
     },
 ];
 
-// ** GET API to fetch a random question **
 app.get("/api/question", async (req, res) => {
     const randomQuestion = questions[Math.floor(Math.random() * questions.length)];
     res.json({ question: randomQuestion.question, options: randomQuestion.options });
 });
 
-// ** POST API to submit an answer **
 app.post("/api/submit", async (req, res) => {
     const { question, answer } = req.body;
     const questionObj = questions.find((q) => q.question === question);
@@ -56,7 +66,6 @@ app.post("/api/submit", async (req, res) => {
     res.status(404).json({ message: "Question not found" });
 });
 
-// Start the Server
 const PORT = 5000;
 app.listen(PORT, () => {
     console.log(`Quiz API running on http://localhost:${PORT}`);
